@@ -1,0 +1,234 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Local stacks only — no webfont fetch, so the app builds and runs offline
+       and the Korean body text falls back to whatever the OS ships. */
+    --font-sans: "Pretendard Variable", Pretendard, -apple-system,
+      BlinkMacSystemFont, "Apple SD Gothic Neo", "Segoe UI", "Malgun Gothic",
+      "Noto Sans KR", Roboto, sans-serif;
+    --font-serif: "Iowan Old Style", "Apple Garamond", Georgia, "Nanum Myeongjo",
+      "Noto Serif KR", "Batang", serif;
+    --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+      "Liberation Mono", monospace;
+
+    --background: 280 22% 96%;
+    --foreground: 270 22% 12%;
+
+    --card: 282 26% 98%;
+    --card-foreground: 270 22% 12%;
+
+    --popover: 282 26% 98%;
+    --popover-foreground: 270 22% 12%;
+
+    --primary: 266 46% 44%;
+    --primary-foreground: 280 30% 97%;
+
+    --secondary: 278 16% 90%;
+    --secondary-foreground: 270 18% 16%;
+
+    --muted: 278 14% 91%;
+    --muted-foreground: 268 10% 40%;
+
+    --accent: 278 18% 88%;
+    --accent-foreground: 270 18% 14%;
+
+    --destructive: 0 62% 42%;
+    --destructive-foreground: 280 30% 97%;
+
+    --border: 275 14% 82%;
+    --input: 275 14% 82%;
+    --ring: 266 46% 44%;
+
+    --paper: 282 26% 95%;
+    --paper-shade: 276 16% 86%;
+    --paper-line: 270 22% 22%;
+
+    /* Saul's gold — the one warm pop against the cool field. UI only; the
+       illustrations stay monochrome. */
+    --gold: 41 74% 46%;
+    --gold-foreground: 270 30% 10%;
+
+    --radius: 0.4rem;
+  }
+
+  .dark {
+    /* Deep aubergine night + Saul's gold. One dark theme, no switch. */
+    --background: 267 34% 11%;
+    --foreground: 276 33% 95%;
+
+    --card: 264 30% 16%;
+    --card-foreground: 276 33% 95%;
+
+    --popover: 264 30% 16%;
+    --popover-foreground: 276 33% 95%;
+
+    --primary: 266 44% 56%;
+    --primary-foreground: 270 40% 97%;
+
+    --secondary: 265 20% 22%;
+    --secondary-foreground: 276 33% 95%;
+
+    --muted: 265 18% 20%;
+    --muted-foreground: 269 18% 68%;
+
+    --accent: 266 22% 24%;
+    --accent-foreground: 276 33% 95%;
+
+    --destructive: 0 55% 45%;
+    --destructive-foreground: 276 24% 94%;
+
+    --border: 268 18% 26%;
+    --input: 268 18% 26%;
+    --ring: 266 48% 62%;
+
+    --paper: 264 32% 15%;
+    --paper-shade: 266 20% 22%;
+    --paper-line: 276 30% 90%;
+
+    --gold: 43 78% 60%;
+    --gold-foreground: 267 40% 10%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "kern" 1, "liga" 1;
+  }
+  ::selection {
+    @apply bg-foreground/85 text-background;
+  }
+}
+
+@layer components {
+  /* Fibrous paper grain laid under the whole app. Two offset noise layers
+     keep the texture from reading as a repeating tile. */
+  .paper-grain {
+    position: relative;
+  }
+  .paper-grain::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.5;
+    mix-blend-mode: multiply;
+    background-image:
+      radial-gradient(hsl(var(--foreground) / 0.055) 0.6px, transparent 0.6px),
+      radial-gradient(hsl(var(--foreground) / 0.035) 0.5px, transparent 0.5px);
+    background-size: 3px 3px, 7px 7px;
+    background-position: 0 0, 2px 3px;
+  }
+  .dark .paper-grain::before {
+    mix-blend-mode: screen;
+    opacity: 0.35;
+  }
+
+  /* Graphite underline that fills in on hover, like a ruler stroke. */
+  .pencil-underline {
+    background-image: linear-gradient(
+      to right,
+      hsl(var(--foreground) / 0.65),
+      hsl(var(--foreground) / 0.65)
+    );
+    background-repeat: no-repeat;
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    transition: background-size 0.28s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+  .pencil-underline:hover,
+  .pencil-underline:focus-visible {
+    background-size: 100% 1px;
+  }
+
+  /* A gold rule that sweeps in under section headings and the wordmark. */
+  .gold-underline {
+    background-image: linear-gradient(
+      to right,
+      hsl(var(--gold) / 0.9),
+      hsl(var(--gold) / 0.9)
+    );
+    background-repeat: no-repeat;
+    background-size: 0% 2px;
+    background-position: 0 100%;
+    transition: background-size 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+  .gold-underline:hover,
+  .gold-underline:focus-visible {
+    background-size: 100% 2px;
+  }
+
+  /* Hatching that sweeps in behind interactive cards on hover. */
+  .pencil-hatch {
+    position: relative;
+    isolation: isolate;
+  }
+  .pencil-hatch::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.22s ease-out;
+    background-image: repeating-linear-gradient(
+      -48deg,
+      hsl(var(--foreground) / 0.11) 0px,
+      hsl(var(--foreground) / 0.11) 1px,
+      transparent 1px,
+      transparent 5px
+    );
+  }
+  .pencil-hatch:hover::after,
+  .pencil-hatch:focus-visible::after,
+  .pencil-hatch[data-active="true"]::after {
+    opacity: 1;
+  }
+
+  .sketch-frame {
+    border: 1px solid hsl(var(--foreground) / 0.22);
+    box-shadow:
+      2px 2px 0 hsl(var(--foreground) / 0.06),
+      inset 0 0 0 1px hsl(var(--background));
+  }
+}
+
+@layer utilities {
+  .scrollbar-graphite {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--foreground) / 0.25) transparent;
+  }
+  .scrollbar-graphite::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  .scrollbar-graphite::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--foreground) / 0.22);
+    border-radius: 999px;
+  }
+  .scrollbar-graphite::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
